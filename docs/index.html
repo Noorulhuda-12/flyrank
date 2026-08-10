@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Ranking Signal Analysis: Prioritizing Content Fixes with FlyRank Data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; max-width: 900px; margin: 36px auto; color:#111 }
+    h1,h2,h3{ color:#1a202c }
+    pre{ background:#f6f8fa; padding:12px; }
+    .muted{ color:#555 }
+    .note{ background:#fff8c6; padding:10px; border-left:4px solid #ffd33d }
+  </style>
+</head>
+<body>
+  <a href="https://colab.research.google.com/github/Noorulhuda-12/flyrank/blob/main/work/capstone_paper_notebook.ipynb" target="_blank">Open in Colab</a>
+  <h1>Ranking Signal Analysis: Prioritizing Content Fixes with FlyRank Data</h1>
+  <h3>Abstract</h3>
+  <p>For content editors deciding which pages to fix first, we build a ranked priority score using FlyRank data to identify pages likely to lose clicks or under-perform. We derive time-aware labels from the FlyRank warehouse (prev30 vs next30 CTR) and create features using only data available before a chosen freeze date. We test simple rule baselines and a ranked model, validating on a time-aware holdout and reporting precision@K and average CTR lift. The analysis highlights the most predictive signals and produces a ranked action list with reason codes for editors. Results are presented as decision-support only, with limitations and reproducibility notes documented.</p>
+
+  <h2>Introduction</h2>
+  <p>This work supports editorial decisions: which content items should an editor prioritize to fix or refresh to prevent declines in search-driven engagement.</p>
+
+  <h2>Data</h2>
+  <ul>
+    <li>Starter CSV: <code>data/raw/content_refresh_anonymized.csv</code> (30,000 rows) used for quick iteration.</li>
+    <li>Warehouse: <code>hf://datasets/FlyRank/internship-warehouse</code> — use <code>fact_content_daily_performance_sample</code> for iteration and <code>fact_content_daily_performance</code> for final scans.</li>
+    <li>Note: the starter CSV lacks a calendar <em>report_date</em> column suitable for time-aware labels; the warehouse provides daily rows required for honest future-window labels.</li>
+  </ul>
+
+  <h2>Methodology (overview)</h2>
+  <ol>
+    <li>Choose freeze date T (example: 2026-05-01). Features use data <= T; labels use T+1..T+30.</li>
+    <li>Aggregate per content_id × client_id: compute <em>ctr_prev30</em> and <em>ctr_next30</em> and form <em>decline_label</em>.</li>
+    <li>Build features available at T (metadata, avg_position_prev30, ai_traffic_prev30, has_keywords, title_length, content_age_days).</li>
+    <li>Baseline: rule-based score (position, CTR by type, missing keywords). Optional: simple ML model (LightGBM).</li>
+    <li>Validation: time-aware holdout, per-client stability checks, and leakage tests (do NOT use derived trend columns as features).</li>
+  </ol>
+
+  <h2>Results (placeholder)</h2>
+  <p class="muted">This page is a scaffold. After you run the warehouse aggregation and signal tests (not included here), the results, charts and tables will appear below. See the notebooks in the <code>work/</code> folder.</p>
+
+  <h2>Limitations</h2>
+  <ul>
+    <li>Panel bias: clients have different history depths.</li>
+    <li>Label noise: short windows and sparse data can lead to noisy labels.</li>
+    <li>Directional claims only: we provide decision-support, not causal claims.</li>
+  </ul>
+
+  <h2>Ranked recommendations (example)</h2>
+  <ol>
+    <li>Top-decile items: prioritize metadata & title updates, add missing keywords, check content freshness.</li>
+    <li>Use reason codes: low visibility (avg_position>10), low CTR for content type, no keywords present.</li>
+  </ol>
+
+  <h2>Reproducibility</h2>
+  <p>Notebooks: <code>work/01_eda_starter.ipynb</code>, <code>work/02_signal_tests.ipynb</code>, <code>work/03_ranking_engine.ipynb</code>, <code>work/capstone_paper_notebook.ipynb</code>. Cached outputs appear in <code>work/outputs/</code> so reviewers can run notebooks without a Hugging Face token. To regenerate caches from the warehouse, run the provided Colab aggregation cell and supply a Hugging Face read token (do not commit the token).</p>
+
+  <h2>Acknowledgments</h2>
+  <p>Built on the FlyRank ML Internship dataset — <a href="https://flyrank.ai" target="_blank">flyrank.ai</a></p>
+
+  <div class="note">Next steps: run the warehouse aggregation in Colab (securely enter your HF token) to create <code>work/outputs/labelled_agg.parquet</code>, then re-run the notebooks in <code>work/</code> to populate the results and figures. When ready, convert the capstone notebook to HTML and this page will show the final charts.</div>
+</body>
+</html>
