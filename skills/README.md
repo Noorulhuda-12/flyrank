@@ -15,7 +15,7 @@ copy its whole content, and paste it into your chat before asking for help. That
 | Your task | Load this skill | Also load for data work |
 |---|---|---|
 | Any task — how to work with your assistant at all | `directing-your-ai-assistant/SKILL.md` | — |
-| Pick a lane, frame your question (ML-02, ML-03) | `framing-ml-problems/SKILL.md` | `flyrank/flyrank-data/SKILL.md` |
+| Pick a lane, frame your question (ML-02, ML-03) | Ranking Signal Analysis. | `flyrank/flyrank-data/SKILL.md` |
 | Write + verify the data contract (ML-04) | `writing-data-contracts/SKILL.md` | `flyrank/flyrank-data/SKILL.md` |
 | Query the big warehouse without downloading it (ML-04/05, capstone) | `querying-big-datasets/SKILL.md` | `flyrank/flyrank-data/SKILL.md` |
 | EDA + signal tests with verdicts (ML-06) | `auditing-signals/SKILL.md` | `flyrank/flyrank-data/SKILL.md` |
